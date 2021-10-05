@@ -38,3 +38,79 @@ static int hex_print(char c)
 	}
 	return (num);
 }
+/**
+ * print_s - prints a string
+ * @s: string to print
+ *
+ * Return: number of chars printed
+ */
+int print_s(va_list s)
+{
+	char *str = va_arg(s, char *);
+	int num;
+
+	if (str == NULL)
+		str = "(null)";
+	for (num = 0; str[num]; num++)
+	{
+		_putchar(str[num]);
+	}
+	return (num);
+}
+
+
+/**
+ * print_S - prints a string and nonprintable character ascii values
+ * @S: string to print
+ *
+ * Return: number of chars printed
+ */
+int print_S(va_list S)
+{
+	unsigned int i;
+	int num = 0;
+	char *str = va_arg(S, char *);
+
+	if (str == NULL)
+		str = "(null)";
+	for (i = 0; str[i]; i++)
+	{
+		if (str[i] < 32 || str[i] >= 127)
+		{
+			_putchar('\\');
+			_putchar('x');
+			num += 2;
+			num += hex_print(str[i]);
+		}
+		else
+		{
+			_putchar(str[i]);
+			num++;
+		}
+	}
+	return (num);
+}
+
+/**
+ * print_r - prints astring in reverse
+ * @r: string to print
+ *
+ * Return: number of chars printed
+ */
+int print_r(va_list r)
+{
+	char *str;
+	int x, num = 0;
+
+	str = va_arg(r, char *);
+	if (str == NULL)
+		str = ")llun(";
+	for (x = 0; str[x]; x++)
+		;
+	for (x -= 1; x >= 0; x--)
+	{
+		_putchar(str[x]);
+		num++;
+	}
+	return (num);
+}
