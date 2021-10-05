@@ -13,6 +13,13 @@ typedef struct print
 	int (*f)(va_list);
 } print_t;
 
+typedef struct modifiers
+{
+	_Bool plus;
+	_Bool space;
+	_Bool hash;
+} mods;
+
 int _putchar(char c);
 int _printf(const char *format, ...);
 int print_c(va_list c);
@@ -28,5 +35,10 @@ int print_p(va_list p);
 int print_S(va_list S);
 int print_r(va_list r);
 int print_R(va_list R);
+int print_rev(va_list l, mods *f);
+int print_bigS(va_list l, mods *f);
+_Bool isNonAlphaNumeric(char c);
+int get_flags(char s, mods *f);
 
 #endif  /* _MAIN_H */
+
