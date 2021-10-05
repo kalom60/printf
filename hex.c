@@ -50,3 +50,32 @@ int print_x(va_list x)
 	return (print_hex(va_arg(x, unsigned int), 0));
 }
 
+/**
+ * print_X - takes an unsigned int and prints it in uppercase hex notation
+ * @X: unsigned int to print
+ *
+ * Return: number of digits printed
+ */
+int print_X(va_list X)
+{
+  return (print_hex(va_arg(X, unsigned int), 1));
+}
+
+/**
+ * _pow - calculates an exponent
+ * @base: base of exponent
+ * @exponent: exponent of number
+ *
+ * Return: base ^ exponent
+ */
+static unsigned long _pow(unsigned int base, unsigned int exponent)
+{
+  unsigned int i;
+  unsigned long ans = base;
+
+  for (i = 1; i < exponent; i++)
+  {
+    ans *= base;
+  }
+  return (ans);
+}
