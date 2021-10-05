@@ -2,40 +2,43 @@
 #include <stdlib.h>
 
 /**
- * check_for_specifiers - check for a valid format specifier
- * @format: possible format specifier
- *
- * Return: pointer to valid function or NULL
+ * get_print - selects the right printing function
+ * depending on the conversion specifier passed to _printf
+ * @s: character that holds the conversion specifier
+ * Description: the function loops through the structs array
+ * func_arr[] to find a match between the specifier passed to _printf
+ * and the first element of the struct, and then the approriate
+ * printing function
+ * Return: a pointer to the matching printing function
  */
-static int (*check_for_specifiers(const char *format))(va_list)
+int (*get_print(char s))(va_list, mods *)
 {
-	unsigned int i;
-	print_t pt[] = {
-		{"i", print_i},
-		{"d", print_d},
-		{"u", print_u},
-		{"b", print_b},
-		{"S", print_S},
-		{"r", print_r},
-		{"R", print_R},
-		{"o", print_o},
-		{"x", print_x},
-		{"c", print_c},
-		{"s", print_s},
-		{"X", print_X},
-		{"p", print_p},
-		{NULL, NULL}
-	};
+	ph func_arr[] = {
+		{'i', print_int},
+		{'s', print_string},
+		{'c', print_char},
+		{'d', print_int},
+		{'u', print_unsigned},
+		{'x', print_hex},
+		{'X', print_hex_big},
+		{'b', print_binary},
+		{'o', print_octal},
+		{'R', print_rot13},
+		{'r', print_rev},
+		{'S', print_bigS},
+		{'p', print_address},
+		{'%', print_percent},
+		{NUL, NULL}
+		};
 
-	for (i = 0; pt[i].t != NULL; i++)
-	{
-		if (*(pt[i].t) == *format)
-		{
-			break;
-		}
-	}
-	return (pt[i].f);
+	register short i;
+
+	for (i = 0; func_arr[i].c; i++)
+		if (func_arr[i].c == s)
+			return (func_arr[i].f);
+	return (NULL);
 }
+
 
 /**
  * _printf - prints almost anything
@@ -76,3 +79,4 @@ int _printf(const char *format, ...)
 	va_end(arguments);
 	return (len);
 }
+

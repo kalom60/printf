@@ -1,128 +1,109 @@
 #include "main.h"
 
 /**
- * print_hex - prints an unsigned int in hexidecimal form
- * @n: unsigned int to print
- * @c: flag to determine case of printing (0 = lower, 1 = upper)
- *
- * Return: number of digits printed
+ * print_hex - prints a number in hexadecimal base,
+ * in lowercase
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct flags that determines
+ * if a flag is passed to _printf
+ * Description: the function calls convert() which in turns converts the input
+ * number into the correct base and returns it as a string
+ * Return: the number of char printed
  */
-int print_hex(unsigned int n, unsigned int c)
+int print_hex(va_list l, mods *f)
 {
-	unsigned int a[8];
-	unsigned int i, m, total;
-	char diff;
-	int num;
+	unsigned int num = va_arg(l, unsigned int);
+	char *str = convert(num, 16, 1);
 
-	m = 268435456; /* (16 ^ 7) */
-	if (c)
-		diff = 'A' - ':';
-	else
-		diff = 'a' - ':';
-	a[0] = n / m;
-	for (i = 1; i < 8; i++)
-	{
-		m /= 16;
-		a[i] = (n / m) % 16;
-	}
-	for (i = 0, total = 0, num = 0; i < 8; i++)
-	{
-		total += a[i];
-		if (total || i == 7)
-		{
-			if (a[i] < 10)
-				_putchar('0' + a[i]);
-			else
-				_putchar('0' + diff + a[i]);
-			num++;
-		}
-	}
-	return (num);
-}
-/**
- * print_x - takes an unsigned int and prints it in lowercase hex notation
- * @x: unsigned int to print
- *
- * Return: number of digits printed
- */
-int print_x(va_list x)
-{
-	return (print_hex(va_arg(x, unsigned int), 0));
+	register short len = 0;
+
+	if (f->hash && *str != '0')
+		len += _puts(HEXA);
+	len += _puts(str);
+	return (len);
 }
 
 /**
- * print_X - takes an unsigned int and prints it in uppercase hex notation
- * @X: unsigned int to print
- *
- * Return: number of digits printed
+ * print_hex_big - prints a number in hexadecimal base,
+ * in uppercase
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct that determines
+ * if a flag is passed to _printf
+ * Description: the function calls convert() which in turns converts the input
+ * number into the correct base and returns it as a string
+ * Return: the number of char printed
  */
-int print_X(va_list X)
+int print_hex_big(va_list l, mods *f)
 {
-	return (print_hex(va_arg(X, unsigned int), 1));
+	unsigned int num = va_arg(l, unsigned int);
+	char *str = convert(num, 16, 0);
+
+	register short len = 0;
+
+	if (f->hash && *str != '0')
+		len += _puts(HEXA);
+	len += _puts(str);
+	return (len);
 }
 
 /**
- * _pow - calculates an exponent
- * @base: base of exponent
- * @exponent: exponent of number
- *
- * Return: base ^ exponent
+ * print_binary - prints a number in base 2
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct that determines
+ * if a flag is passed to _printf
+ * Description: the function calls convert() which in turns converts the input
+ * number into the correct base and returns it as a string
+ * Return: the number of char printed
  */
-static unsigned long _pow(unsigned int base, unsigned int exponent)
+int print_binary(va_list l, mods *f)
 {
-	unsigned int i;
-	unsigned long ans = base;
+	unsigned int num = va_arg(l, unsigned int);
+	char *str = convert(num, 2, 0);
 
-	for (i = 1; i < exponent; i++)
-		ans *= base;
-	return (ans);
+	(void)f;
+	return (_puts(str));
 }
 
 /**
- * print_p - prints an address
- * @p: address to print
- *
- * Return: number of characters to print
+ * print_octal - prints a number in base 8
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct that determines
+ * if a flag is passed to _printf
+ * Description: the function calls convert() which in turns converts the input
+ * number into the correct base and returns it as a string
+ * Return: the number of char printed
  */
-int print_p(va_list p)
+int print_octal(va_list l, mods *f)
 {
-	int num = 0;
-	unsigned int a[16];
-	unsigned int i, total;
-	unsigned long n, m;
-	char *str = "(nil)";
+	unsigned int num = va_arg(l, unsigned int);
+	char *str = convert(num, 8, 0);
 
-	n = va_arg(p, unsigned long);
-	if (n == 0)
-	{
-		for (i = 0; str[i]; i++)
-		{
-			_putchar(str[i]);
-			num++;
-		}
-		return (num);
-	}
-	_putchar('0');
-	_putchar('x');
-	num = 2;
-	m = _pow(16, 15); /* 16 ^ 15 */
-	a[0] = n / m;
-	for (i = 1; i < 16; i++)
-	{
-		m /= 16;
-		a[i] = (n / m) % 16;
-	}
-	for (i = 0, total = 0; i < 16; i++)
-	{
-		total += a[i];
-		if (total || i == 15)
-		{
-			if (a[i] < 10)
-				_putchar('0' + a[i]);
-			else
-				_putchar('0' + ('a' - ':') + a[i]);
-			num++;
-		}
-	}
-	return (num);
+	register short len = 0;
+
+	if (f->hash && *str != '0')
+		len += _putchar('0');
+	len += _puts(str);
+	return (len);
+}
+
+/**
+ * print_address - prints address of input in hexa format
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct flags that determines
+ * if a flag is passed to _printf
+ * Return: number of char printed
+ */
+int print_address(va_list l, mods *f)
+{
+	char *str;
+	unsigned long int p = va_arg(l, unsigned long int);
+
+	register int len = 0;
+
+	(void)f;
+	if (!p)
+		return (_puts(NIL));
+	str = convert(p, 16, 1);
+	len += _puts(HEXA) + _puts(str);
+	return (len);
 }

@@ -13,6 +13,7 @@
 int print_bigS(va_list l, mods *f)
 {
 	register short len = 0;
+	int count;
 	char *res, *s = va_arg(l, char *);
 
 	(void)f;
@@ -40,7 +41,7 @@ int print_bigS(va_list l, mods *f)
  * @c: input char
  * Return: true or false
  */
-_Bool isNonAlphaNumeric(char c)
+bool isNonAlphaNumeric(char c)
 {
 	return ((c > 0 && c < 32) || c >= 127);
 }
@@ -66,3 +67,46 @@ int print_rev(va_list l, mods *f)
 		_putchar(s[j]);
 	return (len);
 }
+
+/**
+ * print_rot13 - prints a string using rot13
+ * @l: list of arguments from _printf
+ * @f: pointer to the struct flags that determines
+ * if a flag is passed to _printf
+ * Return: length of the printed string
+ */
+int print_rot13(va_list l, mods *f)
+{
+	register short i, j;
+	char rot13[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	char ROT13[] = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
+	char *s = va_arg(l, char *);
+
+	(void)f;
+	for (j = 0; s[j]; j++)
+	{
+		if (s[j] < 'A' || (s[j] > 'Z' && s[j] < 'a') || s[j] > 'z')
+			_putchar(s[j]);
+		else
+		{
+			for (i = 0; i <= 52; i++)
+				if (s[j] == rot13[i])
+					_putchar(ROT13[i]);
+		}
+	}
+	return (j);
+}
+
+/**
+ * print_percent - prints a percent
+ * @l: va_list arguments from _printf
+ * @f: pointer to the struct flags in which we turn the flags on
+ * Return: number of char printed
+ */
+int print_percent(va_list l, mods *f)
+{
+	(void)l;
+	(void)f;
+	return (_putchar('%'));
+}
+
