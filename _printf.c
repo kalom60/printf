@@ -45,38 +45,34 @@ static int (*check_for_specifiers(const char *format))(va_list)
  */
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, num = 0;
-	va_list valist;
-	int (*f)(va_list);
+	register short len = 0;
+	int (*printFunc)(va_list, mods *);
+	mods prefixes = PF_INIT;
+	const char *p = format;
+	va_list arguments;
 
-	if (format == NULL)
-		return (-1);
-	va_start(valist, format);
-	while (format[i])
+	va_start(arguments, format);
+	assert(invalidInputs(p));
+	for (; *p; p++)
 	{
-		for (; format[i] != '%' && format[i]; i++)
+		if (*p == '%')
 		{
-			_putchar(format[i]);
-			num++;
-		}
-		if (!format[i])
-			return (num);
-		f = check_for_specifiers(&format[i + 1]);
-		if (f != NULL)
-		{
-			num += f(valist);
-			i += 2;
-			continue;
-		}
-		if (!format[i + 1])
-			return (-1);
-		_putchar(format[i]);
-		num++;
-		if (format[i + 1] == '%')
-			i += 2;
-		else
-			i++;
+			p++;
+			if (*p == '%')
+			{
+				len += _putchar('%');
+				continue;
+			}
+			while (get_flags(*p, &prefixes))
+				p++;
+			printFunc = get_print(*p);
+			len += (printFunc)
+				? printFunc(arguments, &prefixes)
+				: _printf("%%%c", *p);
+		} else
+			len += _putchar(*p);
 	}
-	va_end(valist);
-	return (num);
+	_putchar(FLUSH);
+	va_end(arguments);
+	return (len);
 }
